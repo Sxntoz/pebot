@@ -733,31 +733,3 @@ module.exports = {
   loadSkinFile,
   ping: (options) => new PEBot(options).ping(),
 };
-
-if (require.main === module) {
-  const args = Object.fromEntries(process.argv.slice(2).map((arg) => {
-    const [key, ...rest] = arg.replace(/^--/, "").split("=");
-    return [key, rest.join("=") || true];
-  }));
-
-  const bot = createBot({
-    host: args.host || "127.0.0.1",
-    port: args.port || 19132,
-    username: args.username || "PEBot",
-    skinId: args["skin-id"] || args.skinId || "pebot",
-    skinData: args.skin ? loadSkinFile(String(args.skin)) : null,
-  });
-
-  bot.on("connect", () => console.log("RakNet conectado"));
-  bot.on("resolved", ({ host, address }) => console.log(`${host} -> ${address}`));
-  bot.on("raknetReady", () => console.log("RakNet handshake pronto"));
-  bot.on("loginSent", () => console.log("Login enviado"));
-  bot.on("login", () => console.log("Login aceito"));
-  bot.on("spawn", () => console.log("Spawn recebido"));
-  bot.on("message", (msg) => console.log(`<${msg.source}> ${msg.message}`));
-  bot.on("kicked", (reason) => console.log(`Kick: ${reason}`));
-  bot.on("error", (err) => {
-    console.error(err.message);
-    process.exitCode = 1;
-  });
-}
